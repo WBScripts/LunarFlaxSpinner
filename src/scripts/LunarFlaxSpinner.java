@@ -86,29 +86,31 @@ public class LunarFlaxSpinner extends Script implements Painting
                         }
                         else
                         {
-                            Banking.withdraw(25, flaxName);
-                            Timing.waitCondition(new Condition()
-                            {
-                                @Override
-                                public boolean active()
+                            if(Banking.withdraw(25, flaxName)) {
+                                Timing.waitCondition(new Condition()
                                 {
-                                    return Inventory.find(flaxName).length > 0;
-                                }
-                            },General.random(600,2000));
+                                    @Override
+                                    public boolean active()
+                                    {
+                                        return Inventory.find(flaxName).length > 0;
+                                    }
+                                }, General.random(600, 2000));
+                            }
                             General.sleep(General.randomSD(70,1500,465,150));
                         }
                     }
                     else
                     {
-                        Banking.close();
-                        Timing.waitCondition(new Condition()
-                        {
-                            @Override
-                            public boolean active()
+                        if (Banking.close()) {
+                            Timing.waitCondition(new Condition()
                             {
-                                return !Banking.isBankScreenOpen();
-                            }
-                        },General.random(600,2000));
+                                @Override
+                                public boolean active()
+                                {
+                                    return !Banking.isBankScreenOpen();
+                                }
+                            }, General.random(600, 2000));
+                        }
                         General.sleep(General.randomSD(70,1500,435,150));
                     }
                 }
@@ -123,45 +125,49 @@ public class LunarFlaxSpinner extends Script implements Painting
                         else
                         {
                             General.sleep(General.randomSD(reactMin, reactMax, reactMean, reactSD));
-                            Magic.selectSpell(spellName);
-                            if(Timing.waitCondition(new Condition()
+                            if(Magic.selectSpell(spellName))
                             {
-                                @Override
-                                public boolean active()
-                                {
-                                    return Player.getRSPlayer().getAnimation() != -1;
-                                }
-                            }, General.random(1700, 3800)))
-                            {
-                                General.sleep(General.randomSD(70, 1500, 865, 180));
-                            }
-                            else
-                            {
-                                Banking.openBank();
-                                Timing.waitCondition(new Condition()
+                                if (Timing.waitCondition(new Condition()
                                 {
                                     @Override
                                     public boolean active()
                                     {
-                                        return Banking.isBankScreenOpen();
+                                        return Player.getRSPlayer().getAnimation() != -1;
                                     }
-                                },General.random(1000,2000));
+                                }, General.random(1700, 3800)))
+                                {
+                                    General.sleep(General.randomSD(70, 1500, 865, 180));
+                                }
+                                else // If the spell failed, open the bank as a failsafe
+                                {
+                                    if(Banking.openBank()) {
+                                        Timing.waitCondition(new Condition()
+                                        {
+                                            @Override
+                                            public boolean active()
+                                            {
+                                                return Banking.isBankScreenOpen();
+                                            }
+                                        }, General.random(1000, 2000));
+                                    }
 
-                                General.sleep(General.randomSD(70,1500,435,150));
+                                    General.sleep(General.randomSD(70, 1500, 435, 150));
+                                }
                             }
                         }
                     }
                     else
                     {
-                        Banking.openBank();
-                        Timing.waitCondition(new Condition()
-                        {
-                            @Override
-                            public boolean active()
+                        if(Banking.openBank()) {
+                            Timing.waitCondition(new Condition()
                             {
-                                return Banking.isBankScreenOpen();
-                            }
-                        },General.random(1000,2000));
+                                @Override
+                                public boolean active()
+                                {
+                                    return Banking.isBankScreenOpen();
+                                }
+                            }, General.random(1000, 2000));
+                        }
                         General.sleep(General.randomSD(70,1500,435,150));
                     }
                 }
