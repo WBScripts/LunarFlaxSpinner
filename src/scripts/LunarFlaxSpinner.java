@@ -31,9 +31,17 @@ public class LunarFlaxSpinner extends Script implements Painting
     boolean reactSet = false;
 
 
+    long startTime = -1;
+
+    int startMageLvl = -1,
+            startCraftLevel = -1,
+            startMageXp = -1,
+            startCraftXp = -1;
+
     @Override
     public void run()
     {
+        startTime = Timing.currentTimeMillis();
         ABCUtil abcUtil = new ABCUtil();
 
         boolean runScript = true;
@@ -123,7 +131,7 @@ public class LunarFlaxSpinner extends Script implements Painting
                                 {
                                     return Player.getRSPlayer().getAnimation() != -1;
                                 }
-                            }, General.random(900, 2800)))
+                            }, General.random(1700, 3800)))
                             {
                                 General.sleep(General.randomSD(70, 1500, 865, 180));
                             }
@@ -178,15 +186,14 @@ public class LunarFlaxSpinner extends Script implements Painting
     @Override
     public void onPaint(Graphics g)
     {
+        g.setColor(Color.GREEN);
 
-        /*
-        g.setColor(new Color(0,0,0,75));
-        g.drawRect(10,10,500,500);
-
-        g.setColor(Color.WHITE);
-
-
-        g.drawString("Lunar Flax Spinner",20,20);*/
+        g.drawString("Lunar Flax Spinner",20,20);
+        g.drawString("Time Ran: " + Timing.msToString(Timing.currentTimeMillis()-startTime),20,40);
+        g.drawString("Magic XP/hr: " + perHour(Skills.getXP(Skills.SKILLS.MAGIC)-startMageXp),20,60);
+    }
+    private String perHour(int gained) {
+        return (((int) ((gained) * 3600000D / (System.currentTimeMillis() - startTime))) + "");
     }
 
     /*
